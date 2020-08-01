@@ -1,0 +1,18 @@
+The default output from `du` is sortable, but not particularly readable.
+The output from `du -h`, on the other hand, is quite readable, but not
+sortable.
+
+Let's fix this with a mindbogglingly horrible late-night bit of code!
+
+`sorth` is meant to do one thing, and one thing well enough.   It
+takes the raw output from `du -h` and sorts it by actual size (small
+to large; other text is sorted to the top of the list.)
+
+
+It takes one optional argument.  `sorth -r` sorts in reverse order.
+
+
+To build `sort`, `make && make install`    If your system has the bsd
+`fgetln` function in stdio, you need to do `make CFLAGS=-DHAS_FGETLN`
+and if you want to install the binary somewhere other than the default,
+`make BINDIR={your bin} install`
