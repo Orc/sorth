@@ -11,6 +11,8 @@ char **lines = NULL;
 int nrlines = 0;
 int szlines = 80;
 
+int reversed = 0;
+
 
 /*
  * allocate memory or die
@@ -116,12 +118,16 @@ sorth(const void *a, const void *b)
 
 
 int
-main()
+main(argc, argv)
+char **argv;
 {
     char *thisline;
     size_t size;
     int ct = 0;
     int i;
+
+    if ( (argc > 1) && (strcmp(argv[1], "-r") == 0) )
+	reversed=1;
     
     lines = xmalloc(szlines * sizeof(*lines));
 
@@ -140,9 +146,16 @@ main()
     if ( nrlines > 1 )
 	qsort(lines, nrlines, sizeof(*lines), sorth);
 
-    for (i=0; i < nrlines; i++)
-	if ( lines[i] )
-	    puts(lines[i]);
+    if ( reversed ) {
+	for (i=nrlines-1; i >= 0; --i)
+	    if ( lines[i] )
+		puts(lines[i]);
+    }
+    else {
+	for (i=0; i < nrlines; i++)
+	    if ( lines[i] )
+		puts(lines[i]);
+    }
     
     return 0;
 }
