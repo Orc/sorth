@@ -1,6 +1,6 @@
 CC=cc
 CFLAGS=-O
-INSTALL="install -c"
+INSTALL=install -c
 BINDIR=/usr/local/bin
 
 sorth: sorth.c
