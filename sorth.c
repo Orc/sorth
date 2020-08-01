@@ -24,7 +24,7 @@ xmalloc(size_t size)
 
     if ( res ) return res;
 
-    fprintf(stderr, "unable to allocate %ld byte%s (%s)\n", size, (size==1)?"":"s", strerror(errno));
+    fprintf(stderr, "unable to allocate %ld byte%s (%s)\n", (long)size, (size==1)?"":"s", strerror(errno));
     exit(1);
 }
 
@@ -39,7 +39,7 @@ xrealloc(void *ptr, size_t newsize)
 
     if ( res ) return res;
 
-    fprintf(stderr, "unable to reallocate %ld byte%s (%s)\n", newsize, (newsize==1)?"":"s", strerror(errno));
+    fprintf(stderr, "unable to reallocate %ld byte%s (%s)\n", (long)newsize, (newsize==1)?"":"s", strerror(errno));
     exit(1);
 }
 
@@ -114,6 +114,38 @@ sorth(const void *a, const void *b)
 
     return 0;
 }
+
+
+#ifndef HAS_FGETLN
+
+char *input_line = NULL;
+int input_line_sz = 0;
+
+char *
+fgetln(FILE *input, size_t *ret)
+{
+    int c;
+    int idx = 0;
+
+    if ( ferror(input) || feof(input) )
+	return NULL;
+
+    while ( (c=fgetc(input)) != EOF ) {
+	if ( idx >= input_line_sz ) {
+	    input_line_sz = (input_line_sz == 0) ? 80 : (2*input_line_sz);
+	    input_line = input_line ? xrealloc(input_line, input_line_sz * sizeof (*input_line))
+				    : xmalloc(input_line_sz * sizeof (*input_line));
+	}
+	input_line[idx++] = c;
+
+	if ( c == '\n')
+	    break;
+    }
+    (*ret) = idx;
+    return input_line;
+}
+
+#endif
 
 
 
